@@ -86,20 +86,34 @@ function renderResults(results) {
   }
 }
 
+const FREE_MAX_DEPTH = 2;
+
+async function loadEntity(entityId, depth) {
+  const [detail, network] = await Promise.all([
+    apiGet(`/api/entities/${entityId}`),
+    apiGet(`/api/entities/${entityId}/network?depth=${depth}`),
+  ]);
+  renderDetail(detail);
+  renderGraph(network);
+}
+
 async function selectEntity(entityId) {
   currentEntityId = entityId;
   hideUpgrade();
   hideTooltip();
+  const depth = Number(els.depth.value);
   try {
-    const [detail, network] = await Promise.all([
-      apiGet(`/api/entities/${entityId}`),
-      apiGet(`/api/entities/${entityId}/network?depth=${els.depth.value}`),
-    ]);
-    renderDetail(detail);
-    renderGraph(network);
+    await loadEntity(entityId, depth);
   } catch (err) {
-    if (err.code === "forbidden") showUpgrade(err.message);
-    else showUpgrade(err.message);
+    showUpgrade(err.message);
+    if (err.code === "forbidden" && depth > FREE_MAX_DEPTH) {
+      // Denied deep traversal: still show the graph at the free depth.
+      try {
+        await loadEntity(entityId, FREE_MAX_DEPTH);
+      } catch {
+        // Banner already explains the failure.
+      }
+    }
   }
 }
 
