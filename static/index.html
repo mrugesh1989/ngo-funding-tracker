@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NGO Funding Tracker</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">◉</span>
+      <h1>NGO Funding Tracker</h1>
+      <span class="tagline">Follow the money. Every edge is cited.</span>
+    </div>
+    <div class="controls">
+      <label class="depth-control">
+        Depth <span id="depth-value">2</span>
+        <input type="range" id="depth" min="1" max="4" value="2" />
+      </label>
+      <input type="password" id="api-key" placeholder="Pro API key (optional)" />
+      <button id="export-btn" title="Export network as CSV (pro)">Export CSV</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search NGOs, foundations, people..." autocomplete="off" />
+        <select id="type-filter">
+          <option value="">All types</option>
+          <option value="ngo">NGO</option>
+          <option value="foundation">Foundation</option>
+          <option value="person">Person</option>
+          <option value="government">Government</option>
+          <option value="corporation">Corporation</option>
+        </select>
+      </div>
+      <ul id="results" class="results"></ul>
+
+      <div id="detail" class="detail hidden">
+        <h2 id="detail-name"></h2>
+        <p id="detail-meta" class="meta"></p>
+        <p id="detail-desc" class="desc"></p>
+        <div class="totals">
+          <div class="total-card">
+            <span class="total-label">Funded out</span>
+            <span id="detail-funded" class="total-value"></span>
+          </div>
+          <div class="total-card">
+            <span class="total-label">Received</span>
+            <span id="detail-received" class="total-value"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="upgrade" class="upgrade hidden">
+        <strong>Pro feature</strong>
+        <p id="upgrade-msg"></p>
+      </div>
+    </aside>
+
+    <section class="graph-area">
+      <div id="graph"></div>
+      <div id="edge-tooltip" class="edge-tooltip hidden"></div>
+      <div id="empty-state" class="empty-state">
+        <p>Search an NGO, foundation, or person to explore its funding network.</p>
+        <p class="hint">Try "Gates", "Soros", or "Human Rights".</p>
+      </div>
+      <div class="legend">
+        <span><i class="dot ngo"></i>NGO</span>
+        <span><i class="dot foundation"></i>Foundation</span>
+        <span><i class="dot person"></i>Person</span>
+        <span><i class="dot government"></i>Government</span>
+        <span><i class="dot corporation"></i>Corporation</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

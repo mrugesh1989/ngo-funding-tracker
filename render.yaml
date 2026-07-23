@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ngo-funding-tracker
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn ngo_tracker.main:app --app-dir src --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/plans
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.4
+      # Free instances have an ephemeral filesystem; the app re-seeds the demo
+      # dataset on every boot. On a paid plan, mount a disk and point this at it:
+      # - key: NGO_TRACKER_DB
+      #   value: /var/data/tracker.db
